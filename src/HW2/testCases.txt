@@ -1,0 +1,39 @@
+MAIL FROM: <mary@email.com>
+MA IL FROM: <mary@email.com
+MAIL FR OM: <mary@email.com>
+MAILFROM: <mary@email.com>
+MAIL FROM <mary@email.com>
+MAIL FROM: mary@email.com>
+MAIL FROM: < mary@email.com>
+MAIL FROM: <ma ry@email.com>
+MAIL FROM: <mary @email.com>
+MAIL FROM: <mary@ email.com>
+MAIL FROM: <mary@ema il.com>
+MAIL FROM: <mary@email .com>
+MAIL FROM: <mary@email. com>
+MAIL FROM: <mary@email.com >
+MAIL FROM: <mary@email.com
+MAIL FROM: <mary@emailcom>
+MAIL FROM: <>
+MAIL FROM: <mary@email.com>MAIL FROM: <mary@email.com>
+RCPT TO: <mary@email.com>
+RCPT TO: <mary@email.com>
+RC PT TO: <mary@email.com
+RCPT T O: <mary@email.com>
+RCPTTO: <mary@email.com>
+RCPT TO <mary@email.com>
+RCPT TO: mary@email.com>
+RCPT TO: < mary@email.com>
+RCPT TO: <ma ry@email.com>
+RCPT TO: <mary @email.com>
+RCPT TO: <mary@ email.com>
+RCPT TO: <mary@ema il.com>
+RCPT TO: <mary@email .com>
+RCPT TO: <mary@email. com>
+RCPT TO: <mary@email.com >
+RCPT TO: <mary@email.com
+RCPT TO: <mary@emailcom>
+RCPT TO: <maryemail.com>
+RCPT TO: <>
+RCPT TO: <mary@email.com>MAIL FROM: <mary@email.com>
+RCPT TO: <mary@email.com>
