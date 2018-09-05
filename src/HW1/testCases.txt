@@ -1,0 +1,20 @@
+MAIL FROM: <mary@email.com>
+MA IL FROM: <mary@email.com
+MAIL FR OM: <mary@email.com>
+MAILFROM: <mary@email.com>
+MAIL FROM <mary@email.com>
+MAIL FROM: mary@email.com>
+MAIL FROM: < mary@email.com>
+MAIL FROM: <ma ry@email.com>
+MAIL FROM: <mary @email.com>
+MAIL FROM: <mary@ email.com>
+MAIL FROM: <mary@ema il.com>
+MAIL FROM: <mary@email .com>
+MAIL FROM: <mary@email. com>
+MAIL FROM: <mary@email.com >
+MAIL FROM: <mary@email.com
+MAIL FROM: <mary@emailcom>
+MAIL FROM: <maryemail.com>
+MAIL FROM: <>
+MAIL FROM: <mary@email.com>MAIL FROM: <mary@email.com>
+MAIL FROM: <mary@email.com>
