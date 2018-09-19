@@ -1,37 +1,17 @@
 import sys
+import os
 
-# check mail, whitespace, from:
-def mailFromCmd ( str ):
-    # store first 4 letters in mail array
-    mail = str[0:4]
-    # error if not "MAIL"
-    if mail[0] != "M" or mail[1] != "A" or mail[2] != "I" or mail[3] != "L":
-        sys.stdout.write("ERROR -- mail-from-cmd")
-        return
-    # check for how much white space comes after mail and store in i
-    i = whitespace( str[4:] )
-    # error if no whitespace
-    if i == 0:
-        sys.stdout.write("ERROR -- mail-from-cmd")
-        return
-    # store characters after whitespace and mail in frome array
-    frome = str[4 + i:]
-    # error if not "FROM:"
-    if frome[0] != "F" or frome[1] != "R" or frome[2] != "O" or frome[3] != "M" or frome[4] != ":":
-        sys.stdout.write("ERROR -- mail-from-cmd")
-        return
-    # check for amount of null space after from:
-    j = nullspace( frome[5:] )
-    # store after null space in path
-    pathe = frome[5 + j:]
-    # error if path test fails
-    if path(pathe) != True:
-        return
-    # if no errors return sender ok
-    sys.stdout.write("250 ok")
-    return 
-    
-    
+# state for command order variables
+dataTime = False
+mailed = False
+rcpt = 0
+recipients = []
+
+# state for error messages
+error = 0
+
+# variable for number of mail from commands received
+fileNum = 1
 
 # whitespace checks how many spaces 
 # returns number of first index without
@@ -64,8 +44,10 @@ def null ( str ):
 # returns true if > is at the end of the path
 # and if there is nothing  between > and mailbox
 def reversePath ( str ): # run backwards through the path
+    global error
     if str [0] != ">":
-        sys.stdout.write("ERROR -- rpath")
+        if error != 500 and error != 503:
+            error = 501
         return False
     return True
 
@@ -73,33 +55,37 @@ def reversePath ( str ): # run backwards through the path
 # returns true if < if at beginning
 # and if there is null or space between < and mailbox
 def path ( str ):
-    # print str
+    global error
     if str[0] == "<" and nullspace(str[1:]) == 0: # make sure next thing is mailbox and not null space
         box = ''.join(str).split(">", 1)
         if len(box) < 2:
-            sys.stdout.write("ERROR -- path")
             return False
         skip2 = nullspace(box[1])
         if crlf(box[1][skip2]) != True:
-            sys.stdout.write("ERROR -- crlf")
+            if error != 500 and error != 503:
+                error = 501
             return False 
         skip = mailbox(box[0][1:])
         if str[skip + 1] == ">":
             return True
     if nullspace(str[1:]) != 0 or str[0] != "<":
-        sys.stdout.write("ERROR -- path")
+        if error != 500 and error != 503:
+            error = 501
         return False
 
 
 # check for local part, @, and domain
 # return true if local part is followed by @ and domain
 def mailbox ( str ): # make sure string without <> being passed in
+    global error
     if "@" not in str:
-        sys.stdout.write("ERROR -- mailbox")
+        if error != 500 and error != 503:
+            error = 501
         return 0
     box = ''.join(str).split("@")
     if len(box) != 2:
-        sys.stdout.write("ERROR -- mailbox")
+        if error != 500 and error != 503:
+            error = 501
         return 0
     if localPart(box[0]) <= 0 or domain(box[1]) <= 0:
         return 0
@@ -111,8 +97,10 @@ def mailbox ( str ): # make sure string without <> being passed in
 # returns false if all digits or null
 # returns string test otherwise
 def localPart ( str ):
+    global error
     if string(str) != True:
-        sys.stdout.write("ERROR -- localpart")
+        if error != 500 and error != 503:
+            error = 501
         return 0
     return len(str)
 
@@ -130,11 +118,9 @@ def string ( str ):
 # return true if printable ascii, otherwise false
 def char ( str ):
     if str == " " or special(str) == True:
-        # sys.stdout.write("ERROR -- char")
         return False
     if ord(str) > 32 and ord(str) <= 128:
         return True
-    # sys.stdout.write("ERROR -- char")
     return False 
 
 
@@ -152,12 +138,15 @@ def domain ( str ):
 # check if a letter or a name
 # return false if letter or name test fails, otherwise true
 def element ( str ):
+    global error
     if len(str) <= 0:
-        sys.stdout.write("ERROR -- element")
+        if error != 500 and error != 503:
+            error = 501
         return False
     if letter(str[0]) != True or name(str) != True:
         if letter(str[0]) != True:
-            sys.stdout.write("ERROR -- element")
+            if error != 500 and error != 503:
+                error = 501
         return 0
     return len(str)
 
@@ -166,11 +155,14 @@ def element ( str ):
 # returns false if letter test on first character fails
 # or if letDigString test fails
 def name ( str ):
+    global error
     if letter(str[0]) != True:
-        sys.stdout.write("ERROR -- name")
+        if error != 500 and error != 503:
+            error = 501
         return False
     if letDigStr(str[1:]) != True:
-        sys.stdout.write("ERROR -- name")
+        if error != 500 and error != 503:
+            error = 501
         return False
     return True
 
@@ -221,33 +213,167 @@ def  crlf ( str ):
 def special ( str ):
     if ( str == '<' or str == '>' or str == '(' or str == ')' or str == '[' or str == ']' or str == '.' or str == ',' or str == ';' or str == ':' or str == '@' or str == '"' or str == "\\"):
         return True
-    return False
+    return False 
 
+def resetGlobals():
+    global mailed
+    global rcpt
+    global dataTime
+    global message
+    global recipients
+    mailed = False
+    rcpt = 0
+    dataTime = 0
+    message = ""
+    recipients = []
+
+# returns false if encounter and error
+# returns true if valid mail command
+def handleErrors():
+    global error
+    if error == 500:
+        sys.stdout.write("500 Syntax error: command unrecognized")
+        return False
+    elif error == 503:
+        sys.stdout.write("503 Bad sequence of commands")
+        return False
+    elif error == 501:
+        sys.stdout.write("501 Syntax error in parameters or arguments")
+        return False
+    else:
+        sys.stdout.write("250 ok")
+        return True
+
+# returns true if still processing
+# false if done processing
+def processData( str ):
+    global message
+    global recipients
+    if str == ".\n":
+        i = 0
+        # print(recipients)
+        while i < len(recipients):
+            prename = recipients[i].split(">", 1)
+            name = "forward/" + prename[0][1:] + ".txt"
+            i += 1
+            f = open(name, "a+")
+            f.write(message)
+            # print(message)
+            f.close()
+        resetGlobals()
+        return False
+    return True
+
+# checks for data command
+# returns false if bad command
+# returns true if need to process data
+def data( str ):
+    global error
+    global dataTime
+    if str[0] != "D" or str[1] != "A" or str[2] != "T" or str[3] != "A":
+        return False
+    i = nullspace(str[4:])
+    if crlf(str[4 + i:]) != True:
+        return False
+    return True
+
+# check rcpt whitespace to:
+# returns true if 500 or 501 level error wasn't written
 def rcptToCmd ( str ):
+    global error
     if str[0] != "R" or str[1] != "C" or str[2] != "P" or str[3] != "T":
-        sys.stdout.write("ERROR -- rcpt-to-cmd")
-        return
+        error = 500
+        return False
     i = whitespace( str[4:] )
     if i == 0:
-        sys.stdout.write("ERROR - rcpt-to-cmd")
-        return
+        error = 500
+        return False
     to = str[4 + i:]
     if to[0] != "T" or to[1] != "O" or to[2] != ":":
-        sys.stdout.write("ERROR -- rcpt-to-cmd")
-        return
+        error = 500
+        return False
     j = nullspace( to[3:] )
     # store after null space in path
     pathe = to[3 + j:]
     # error if path test fails
     if path(pathe) != True:
-        return
+        return False
     # if no errors return sender ok
-    sys.stdout.write("250 ok")
-    return 
+    recipients.append(pathe)
+    return True
 
+# check mail, whitespace, from:
+# returns true if 500 or 501 level error wasn't written
+def mailFromCmd ( str ):
+    global error
+    # store first 4 letters in mail array
+    mail = str[0:4]
+    # error if not "MAIL"
+    if mail[0] != "M" or mail[1] != "A" or mail[2] != "I" or mail[3] != "L":
+        error = 500
+        return False
+    # check for how much white space comes after mail and store in i
+    i = whitespace( str[4:] )
+    # error if no whitespace
+    if i == 0:
+        error = 500
+        return False
+    # store characters after whitespace and mail in frome array
+    frome = str[4 + i:]
+    # error if not "FROM:"
+    if frome[0] != "F" or frome[1] != "R" or frome[2] != "O" or frome[3] != "M" or frome[4] != ":":
+        error = 500
+        return False
+    # check for amount of null space after from:
+    j = nullspace( frome[5:] )
+    # store after null space in path
+    pathe = frome[5 + j:]
+    # error if path test fails
+    if path(pathe) != True:
+        return False
+    # if no errors return sender ok
+    return True
+    
 
-# for loop of sys.stdin to read in char by char
-# remember to spit out where the error occured (ex. mailbox, name, path)
+# state machine
+# checks first letter of command and siphon of to correct helper function
+def grammar ( str ):
+    global mailed
+    global rcpt
+    global dataTime
+    global error
+    # only one mail from cmd
+    if str[0] == "M" and mailed != True:
+        mailed = True
+        mailFromCmd( str )
+    elif str[0] == "M" and mailed == True:
+        if mailFromCmd( str ) == True:
+            if error != 500:
+                error = 503
+    # count number of rcpt commands
+    elif str[0] == "R" and mailed == True:
+        rcpt = rcpt + 1
+        rcptToCmd( str )
+    elif str[0] == "R" and mailed != True:
+        if rcptToCmd( str ) == True:
+            if error != 500:
+                error = 503
+    # receive data
+    elif str[0] == "D" and mailed == True and rcpt > 0:
+        dataTime = data( str )
+        if data( str ) == False:
+            error = 500
+        else:
+            sys.stdout.write("354 Start mail input; end with <CRLF>.<CRLF>\n")
+    elif str[0] == "D" and mailbox != True or rcpt == 0:
+        if data(str) == True:
+            if error != 500:
+                error = 503
+    elif dataTime == True:
+        dataTime = processData ( str )
+    else:
+        if error != 500:
+            error = 503
 
 # for stdin
 # is mail valid if no print error and end process
@@ -256,9 +382,14 @@ def rcptToCmd ( str ):
 # print send Ok and end process
 
 # reads in data and iterates over each line of input
-data = sys.stdin.readlines()
-for address in data:
+info = sys.stdin.readlines()
+message = ""
+for address in info:
+    error = 0
+    if data(address) != True and address != ".\n":
+        message += address
     sys.stdout.write(address)
-    # fix this to decide how to pass off
-    mailFromCmd(address)
-    sys.stdout.write('\n')
+    grammar(address)
+    if dataTime == False:
+        handleErrors()
+        sys.stdout.write('\n')

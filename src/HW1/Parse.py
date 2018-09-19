@@ -28,7 +28,7 @@ def mailFromCmd ( str ):
     if path(pathe) != True:
         return
     # if no errors return sender ok
-    sys.stdout.write("sender ok")
+    sys.stdout.write("Sender ok")
     return 
     
     

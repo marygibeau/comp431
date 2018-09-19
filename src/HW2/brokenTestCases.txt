@@ -1,0 +1,69 @@
+MAIL FROM: <mary@email.com>
+RCPT TO: <jeffay@cs.unc.edu>
+DATA:
+Hello professor
+I'd like to inform you
+about the impending doom
+that huricane florence poses
+stay dry
+.
+
+MA IL FROM: <mary@email.com>
+RCPT TO: <jeffay@cs.unc.edu>
+DATA:
+Hello professor
+I'd like to inform you
+about the impending doom
+that huricane florence poses
+stay dry
+.
+
+MAIL FROM: <mary@email.com>
+RC PT TO: <jeffay@cs.unc.edu>
+DATA:
+Hello professor
+I'd like to inform you
+about the impending doom
+that huricane florence poses
+stay dry
+.
+
+MAIL FROM: <ma ry@email.com>
+RCPT TO: <jeffay@cs.unc.edu>
+DATA:
+Hello professor
+I'd like to inform you
+about the impending doom
+that huricane florence poses
+stay dry
+.
+
+MAIL FROM: <mary@email.com>
+RCPT TO: <jef fay@cs.unc.edu>
+DATA:
+Hello professor
+I'd like to inform you
+about the impending doom
+that huricane florence poses
+stay dry
+.
+
+MAIL FROM: <mary@email.com>
+RCPT TO: <jeffay@cs.unc.edu>
+DA TA:
+Hello professor
+I'd like to inform you
+about the impending doom
+that huricane florence poses
+stay dry
+.
+
+MAIL FROM: <mary@email.com
+RCPT TO: <jeffay@cs.unc.edu>
+DATA:
+Hello professor
+I'd like to inform you
+about the impending doom
+that huricane florence poses
+stay dry
+.

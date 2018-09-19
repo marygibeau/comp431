@@ -1,0 +1,26 @@
+MAIL FROM: <mary@email.com>
+RCPT TO: <jeffay@cs.unc.edu>
+RCPT TO: <diane@cs.unc.edu>
+Hello professor
+I'd like to inform you
+about the impending doom
+that huricane florence poses
+stay dry
+
+MAIL FROM: <mary@email.com>
+RCPT TO: <diane@cs.unc.edu>
+My friends need transfer credits,
+give it to them
+MAIL FROM: <mary@email.com>
+RCPT TO: <jeffay@cs.unc.edu>
+RCPT TO: <diane@cs.unc.edu>
+Hello professor
+I'd like to inform you
+about the impending doom
+that huricane florence poses
+stay dry
+
+MAIL FROM: <mary@email.com>
+RCPT TO: <diane@cs.unc.edu>
+My friends need transfer credits,
+give it to them
