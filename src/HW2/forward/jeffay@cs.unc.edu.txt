@@ -1,75 +1,75 @@
-MAIL FROM: <ivysat@live.unc.edu>
-RCPT TO: <jeffay@cs.unc.edu>
+From: <ivysat@live.unc.edu>
+To: <jeffay@cs.unc.edu>
 Man, we really should have started this sooner
 Debugging can be really hard
 perfectly fine
-MAIL FROM:     <ivysat@live.unc.edu>
-RCPT TO: <jeffay@cs.unc.edu>  
+From: <ivysat@live.unc.edu>
+To: <jeffay@cs.unc.edu>
 Man, we really should have started this sooner
 Debugging can be really hard... 
 good stuff
-MAIL FROM: <ivysat@live.unc.edu>
-RCPT TO: <jeffay@cs.unc.edu>
-MAIL    FROM: <ivy&sat@live.unc.edu>
-RCPT TO: <jeffay@cs.unc.edu>
-RCPT TO: <pozefsky@cs.unc.edu>   
+From: <ivysat@live.unc.edu>
+To: <jeffay@cs.unc.edu>
+From: <ivy&sat@live.unc.edu>
+To: <jeffay@cs.unc.edu>
+To: <pozefsky@cs.unc.edu>
 Man, we really should have started this sooner
 Debugging can be really hard....
 loving this
 
-MAIL FROM: <ivysat@live.unc.edu>
-RCPT TO: <jeffay@cs.unc.edu>
-RCPT TO: <jeffay@cs.unc.edu>
+From: <ivysat@live.unc.edu>
+To: <jeffay@cs.unc.edu>
+To: <jeffay@cs.unc.edu>
 Man, we really should have started this sooner
 Debugging can be really hard
 here are 2 jeffays
-MAIL FROM: <ivysat@live.unc.edu>
-RCPT TO: <jeffay@cs.unc.edu>
-RCPT TO: <jeffay@cs.unc.edu>
+From: <ivysat@live.unc.edu>
+To: <jeffay@cs.unc.edu>
+To: <jeffay@cs.unc.edu>
 Man, we really should have started this sooner
 Debugging can be really hard
 here are 2 jeffays
-MAIL FROM: <ivysat@live.unc.edu>
-RCPT TO: <jeffay@cs.unc.edu>
+From: <ivysat@live.unc.edu>
+To: <jeffay@cs.unc.edu>
 Man, we really should have started this sooner
 Debugging can be really hard
 another good one
-MAIL FROM:     <ivysat@live.unc.edu>
-RCPT TO: <jeffay@cs.unc.edu>  
+From: <ivysat@live.unc.edu>
+To: <jeffay@cs.unc.edu>
 Hey Ivy, do you really think we should use SMTP as a class
 project in COMP 431 this year? The smart students are going to
 figure out automated ways to use this project to send
 anonymous SPAM to the world!
 perfectly fine
-MAIL    FROM: <ivy&sat@live.unc.edu>
-RCPT TO: <jeffay@cs.unc.edu>
-RCPT TO: <pozefsky@cs.unc.edu>   
+From: <ivy&sat@live.unc.edu>
+To: <jeffay@cs.unc.edu>
+To: <pozefsky@cs.unc.edu>
 Man, we really should have started this sooner
 Debugging can be really hard....
 okie dokie
 
-MAIL FROM:     <ivysat@live.unc.edu>
-RCPT TO: <jeffay@cs.unc.edu>  
+From: <ivysat@live.unc.edu>
+To: <jeffay@cs.unc.edu>
 Man, we really should have started this sooner
 Debugging can be really hard... 
 first mail from is gross but we'll power through
-MAIL FROM:     <ivysat@live.unc.edu>
-RCPT TO: <jeffay@cs.unc.edu>  
+From: <ivysat@live.unc.edu>
+To: <jeffay@cs.unc.edu>
 Man, we really should have started this sooner
 Debugging can be really hard... 
 1st mail is jank
-MAIL FROM: <ivysat@live.unc.edu>
-RCPT TO: <jeffay@cs.unc.edu>
+From: <ivysat@live.unc.edu>
+To: <jeffay@cs.unc.edu>
 Man, we really should have started this sooner
 Debugging can be really hard
 first rcpt is wack
-MAIL FROM: <ivysat@live.unc.edu>
-RCPT TO: <jeffay@cs.unc.edu>
+From: <ivysat@live.unc.edu>
+To: <jeffay@cs.unc.edu>
 Man, we really should have started this sooner
 Debugging can be really hard
 who puts a space before their rcpt???
-MAIL FROM: <ivysat@live.unc.edu>
-RCPT TO: <jeffay@cs.unc.edu>
+From: <ivysat@live.unc.edu>
+To: <jeffay@cs.unc.edu>
 Please don't abuse SMTP
 
 MAIL FROM:     <ivysat@live.unc.edu>
@@ -77,51 +77,51 @@ DATA
 Man, we really should have started this sooner
 Debugging can be really hard... 
 this is all one weird message
-MAIL    FROM: <ivy&sat@live.unc.edu>
-RCPT TO: <jeffay@cs.unc.edu>
-RCPT TO: <pozefsky@cs.unc.edu>   
+From: <ivy&sat@live.unc.edu>
+To: <jeffay@cs.unc.edu>
+To: <pozefsky@cs.unc.edu>
 Man, we really should have started this sooner
 Debugging can be really hard....
 2 mail froms are rude
 
-MAIL FROM: <ivysat@live.unc.edu>
-RCPT TO: <jeffay@cs.unc.edu>
-RCPT TO: <pozefsky@cs.unc.edu>
+From: <ivysat@live.unc.edu>
+To: <jeffay@cs.unc.edu>
+To: <pozefsky@cs.unc.edu>
 Man, we really should have started this sooner
 Debugging can be really hard....
 plz don't add random
 
-MAIL FROM: <ivysat@live.unc.edu>
-RCPT TO: <jeffay@cs.unc.edu>
+From: <ivysat@live.unc.edu>
+To: <jeffay@cs.unc.edu>
 Man, we really should have started this sooner
 Debugging can be really hard
 one nub jeffay
-MAIL FROM: <ivysat@live.unc.edu>
-RCPT TO: <jeffay@cs.unc.edu>
-RCPT TO: <jeffay@cs.unc.edu>
+From: <ivysat@live.unc.edu>
+To: <jeffay@cs.unc.edu>
+To: <jeffay@cs.unc.edu>
 Man, we really should have started this sooner
 Debugging can be really hard
 2 good jeffay
-MAIL FROM: <ivysat@live.unc.edu>
-RCPT TO: <jeffay@cs.unc.edu>
-RCPT TO: <jeffay@cs.unc.edu>
+From: <ivysat@live.unc.edu>
+To: <jeffay@cs.unc.edu>
+To: <jeffay@cs.unc.edu>
 Man, we really should have started this sooner
 Debugging can be really hard
 2 good jeffay
-MAIL FROM: <ivysat@live.unc.edu>
-RCPT TO: <jeffay@cs.unc.edu>
-RCPT TO: <jeffay@cs.unc.edu>
+From: <ivysat@live.unc.edu>
+To: <jeffay@cs.unc.edu>
+To: <jeffay@cs.unc.edu>
 Man, we really should have started this sooner
 Debugging can be really hard
 another 2 jeffays
-MAIL FROM: <ivysat@live.unc.edu>
-RCPT TO: <jeffay@cs.unc.edu>
-RCPT TO: <jeffay@cs.unc.edu>
+From: <ivysat@live.unc.edu>
+To: <jeffay@cs.unc.edu>
+To: <jeffay@cs.unc.edu>
 Man, we really should have started this sooner
 Debugging can be really hard
 another 2 jeffays
-MAIL FROM: <ivysat@live.unc.edu>
-RCPT TO: <jeffay@cs.unc.edu>
+From: <ivysat@live.unc.edu>
+To: <jeffay@cs.unc.edu>
 MAIL FROM: <pozefsky@cs.unc.edu>
 RCPT TO: <ivysat@live.unc.edu>
 RCPT TO: <jeffay@cs.unc.edu>

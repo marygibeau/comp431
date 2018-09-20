@@ -5,6 +5,8 @@ import os
 dataTime = False
 mailed = False
 rcpt = 0
+mailFromAddress = ""
+message = ""
 recipients = []
 
 # state for error messages
@@ -221,10 +223,12 @@ def resetGlobals():
     global dataTime
     global message
     global recipients
+    global mailFromAddress
     mailed = False
     rcpt = 0
     dataTime = 0
     message = ""
+    mailFromAddress = ""
     recipients = []
 
 # returns false if encounter and error
@@ -267,8 +271,7 @@ def processData( str ):
             f.close()
         resetGlobals()
         return False
-    if data ( str ) == True:
-        printThisData = True
+    message += str
     return True
 
 # checks for data command
@@ -288,6 +291,7 @@ def data( str ):
 # returns true if 500 or 501 level error wasn't written
 def rcptToCmd ( str ):
     global error
+    global message
     if str[0] != "R" or str[1] != "C" or str[2] != "P" or str[3] != "T":
         error = 500
         return False
@@ -306,13 +310,18 @@ def rcptToCmd ( str ):
     if path(pathe) != True:
         return False
     # if no errors return sender ok
-    recipients.append(pathe)
+    if mailed == True:
+        message += "To: " + pathe.split(">", 1)[0] + ">\n"
+        recipients.append(pathe)
     return True
 
 # check mail, whitespace, from:
 # returns true if 500 or 501 level error wasn't written
 def mailFromCmd ( str ):
     global error
+    global mailFromAddress
+    global mailed
+    global message
     # store first 4 letters in mail array
     mail = str[0:4]
     # error if not "MAIL"
@@ -339,6 +348,9 @@ def mailFromCmd ( str ):
     if path(pathe) != True:
         return False
     # if no errors return sender ok
+    if mailed == False:
+        mailFromAddress = pathe.split(">", 1)[0]
+        message += "From: " + mailFromAddress + ">\n"
     return True
     
 
@@ -398,15 +410,13 @@ def grammar ( str ):
 
 # reads in data and iterates over each line of input
 info = sys.stdin.readlines()
-message = ""
+
 for address in info:
     error = 0
     sys.stdout.write(address)
     grammar(address)
-    if address != ".\n" and error == 0:
-        if printThisData == True or data(address) != True:
-            message += address
-            printThisData = False
     if dataTime == False:
         handleErrors()
         sys.stdout.write('\n')
+
+# from and to are lower case
