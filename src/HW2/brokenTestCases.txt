@@ -1,69 +1,53 @@
 MAIL FROM: <mary@email.com>
 RCPT TO: <jeffay@cs.unc.edu>
-DATA:
-Hello professor
-I'd like to inform you
-about the impending doom
-that huricane florence poses
-stay dry
+DATA
+this is a successful
+test
 .
 
 MA IL FROM: <mary@email.com>
-RCPT TO: <jeffay@cs.unc.edu>
-DATA:
-Hello professor
-I'd like to inform you
-about the impending doom
-that huricane florence poses
-stay dry
+RCPT TO: <sam@cs.unc.edu>
+DATA
+this one
+should never print
 .
 
 MAIL FROM: <mary@email.com>
-RC PT TO: <jeffay@cs.unc.edu>
-DATA:
-Hello professor
-I'd like to inform you
-about the impending doom
-that huricane florence poses
-stay dry
+RC PT TO: <sam@cs.unc.edu>
+DATA
+only mail from should
+succeed here
 .
 
 MAIL FROM: <ma ry@email.com>
-RCPT TO: <jeffay@cs.unc.edu>
-DATA:
-Hello professor
-I'd like to inform you
-about the impending doom
-that huricane florence poses
-stay dry
+RCPT TO: <sam@cs.unc.edu>
+DATA
+This should print bc
+everything but mailed from works
+but mailed from was already assigned
+before
 .
 
 MAIL FROM: <mary@email.com>
 RCPT TO: <jef fay@cs.unc.edu>
-DATA:
-Hello professor
-I'd like to inform you
-about the impending doom
-that huricane florence poses
-stay dry
+DATA
+this shouldn't print
+mailed from works but 
+rcpt doesnt
 .
 
 MAIL FROM: <mary@email.com>
-RCPT TO: <jeffay@cs.unc.edu>
-DA TA:
-Hello professor
-I'd like to inform you
-about the impending doom
-that huricane florence poses
-stay dry
+RCPT TO: <sam@cs.unc.edu>
+DA TA
+rcpt works here
+but data busted
+so this won't print
 .
 
 MAIL FROM: <mary@email.com
-RCPT TO: <jeffay@cs.unc.edu>
-DATA:
+RCPT TO: <sam@cs.unc.edu>
+DATA
 Hello professor
-I'd like to inform you
-about the impending doom
-that huricane florence poses
-stay dry
+this shouldn't work
+bc end of file
 .

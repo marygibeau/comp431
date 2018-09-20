@@ -1,8 +1,0 @@
-
-MAIL FROM: <mary@email.com>
-RCPT TO: <sam@cs.unc.edu>
-See you in rehearsal on Thursday
-
-MAIL FROM: <mary@email.com>
-RCPT TO: <sam@cs.unc.edu>
-See you in rehearsal on Thursday

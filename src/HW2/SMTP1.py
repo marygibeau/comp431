@@ -9,9 +9,7 @@ recipients = []
 
 # state for error messages
 error = 0
-
-# variable for number of mail from commands received
-fileNum = 1
+printThisData = False
 
 # whitespace checks how many spaces 
 # returns number of first index without
@@ -59,6 +57,8 @@ def path ( str ):
     if str[0] == "<" and nullspace(str[1:]) == 0: # make sure next thing is mailbox and not null space
         box = ''.join(str).split(">", 1)
         if len(box) < 2:
+            if error != 500 and error != 503:
+                error = 501
             return False
         skip2 = nullspace(box[1])
         if crlf(box[1][skip2]) != True:
@@ -249,19 +249,26 @@ def handleErrors():
 def processData( str ):
     global message
     global recipients
+    global error
+    global mailed
+    global rcpt
+    global printThisData
     if str == ".\n":
         i = 0
         # print(recipients)
         while i < len(recipients):
+            # print("here's what's being written...")
+            # print(message)
             prename = recipients[i].split(">", 1)
             name = "forward/" + prename[0][1:] + ".txt"
             i += 1
             f = open(name, "a+")
             f.write(message)
-            # print(message)
             f.close()
         resetGlobals()
         return False
+    if data ( str ) == True:
+        printThisData = True
     return True
 
 # checks for data command
@@ -310,19 +317,19 @@ def mailFromCmd ( str ):
     mail = str[0:4]
     # error if not "MAIL"
     if mail[0] != "M" or mail[1] != "A" or mail[2] != "I" or mail[3] != "L":
-        error = 500
+        # error = 500
         return False
     # check for how much white space comes after mail and store in i
     i = whitespace( str[4:] )
     # error if no whitespace
     if i == 0:
-        error = 500
+        # error = 500
         return False
     # store characters after whitespace and mail in frome array
     frome = str[4 + i:]
     # error if not "FROM:"
     if frome[0] != "F" or frome[1] != "R" or frome[2] != "O" or frome[3] != "M" or frome[4] != ":":
-        error = 500
+        # error = 500
         return False
     # check for amount of null space after from:
     j = nullspace( frome[5:] )
@@ -342,22 +349,31 @@ def grammar ( str ):
     global rcpt
     global dataTime
     global error
+    global recipients
     # only one mail from cmd
-    if str[0] == "M" and mailed != True:
-        mailed = True
-        mailFromCmd( str )
+    # print(mailed)
+    # print(rcpt)
+    if dataTime == True:
+        dataTime = processData ( str )
+    elif str[0] == "M" and mailed != True:
+        mailed = mailFromCmd( str )
+        if mailed == False and error == 0:
+            error = 500
     elif str[0] == "M" and mailed == True:
         if mailFromCmd( str ) == True:
-            if error != 500:
-                error = 503
+            error = 503
+        else:
+            error = 500
     # count number of rcpt commands
     elif str[0] == "R" and mailed == True:
-        rcpt = rcpt + 1
-        rcptToCmd( str )
+        if rcptToCmd( str ) == True:
+            rcpt = rcpt + 1
     elif str[0] == "R" and mailed != True:
         if rcptToCmd( str ) == True:
             if error != 500:
                 error = 503
+                recipients = recipients [:-1]
+                
     # receive data
     elif str[0] == "D" and mailed == True and rcpt > 0:
         dataTime = data( str )
@@ -365,15 +381,14 @@ def grammar ( str ):
             error = 500
         else:
             sys.stdout.write("354 Start mail input; end with <CRLF>.<CRLF>\n")
-    elif str[0] == "D" and mailbox != True or rcpt == 0:
+    elif str[0] == "D" and (mailbox != True or rcpt == 0):
         if data(str) == True:
-            if error != 500:
-                error = 503
-    elif dataTime == True:
-        dataTime = processData ( str )
-    else:
-        if error != 500:
             error = 503
+        else:
+            error = 500
+    else:
+        if error != 503:
+            error = 500
 
 # for stdin
 # is mail valid if no print error and end process
@@ -386,10 +401,12 @@ info = sys.stdin.readlines()
 message = ""
 for address in info:
     error = 0
-    if data(address) != True and address != ".\n":
-        message += address
     sys.stdout.write(address)
     grammar(address)
+    if address != ".\n" and error == 0:
+        if printThisData == True or data(address) != True:
+            message += address
+            printThisData = False
     if dataTime == False:
         handleErrors()
         sys.stdout.write('\n')

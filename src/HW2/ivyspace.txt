@@ -1,0 +1,6 @@
+MAIL FROM: <ivy sat@live.unc.edu>
+RCPT TO: <jeffay@cs.unc.edu>
+DATA
+Man, we really should have started this sooner
+Debugging can be really hard
+.
