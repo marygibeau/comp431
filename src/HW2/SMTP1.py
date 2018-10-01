@@ -5,13 +5,14 @@ import os
 dataTime = False
 mailed = False
 rcpt = 0
+
+# stores message, from mail address, and array of recipient addresses
 mailFromAddress = ""
 message = ""
 recipients = []
 
 # state for error messages
 error = 0
-printThisData = False
 
 # whitespace checks how many spaces 
 # returns number of first index without
@@ -54,6 +55,7 @@ def reversePath ( str ): # run backwards through the path
 # runs through path
 # returns true if < if at beginning
 # and if there is null or space between < and mailbox
+# Throws 501 error if issue within and no other issues with command
 def path ( str ):
     global error
     if str[0] == "<" and nullspace(str[1:]) == 0: # make sure next thing is mailbox and not null space
@@ -127,7 +129,8 @@ def char ( str ):
 
 
 # deliniate by . and check that each member of the array is an element
-# return false if element test fails
+# return 0 if element test fails
+# otherwise return length of domain
 def domain ( str ):
     sarray = str.split(".")
     length = len(sarray)
@@ -138,13 +141,14 @@ def domain ( str ):
     return length
 
 # check if a letter or a name
-# return false if letter or name test fails, otherwise true
+# return 0 if letter or name test fails
+# otherwise length of str
 def element ( str ):
     global error
     if len(str) <= 0:
         if error != 500 and error != 503:
             error = 501
-        return False
+        return 0
     if letter(str[0]) != True or name(str) != True:
         if letter(str[0]) != True:
             if error != 500 and error != 503:
@@ -155,7 +159,8 @@ def element ( str ):
 
 # make sure string starts with a letter
 # returns false if letter test on first character fails
-# or if letDigString test fails
+# or if letDigString test fails, otherwise true
+# throws 501 error if no other issues with command
 def name ( str ):
     global error
     if letter(str[0]) != True:
@@ -217,6 +222,7 @@ def special ( str ):
         return True
     return False 
 
+# reset global variables after successful mail message is constructed
 def resetGlobals():
     global mailed
     global rcpt
@@ -231,7 +237,7 @@ def resetGlobals():
     mailFromAddress = ""
     recipients = []
 
-# returns false if encounter and error
+# returns false if encounter an error and print out error message
 # returns true if valid mail command
 def handleErrors():
     global error
@@ -245,18 +251,18 @@ def handleErrors():
         sys.stdout.write("501 Syntax error in parameters or arguments")
         return False
     else:
-        sys.stdout.write("250 ok")
+        sys.stdout.write("250 OK")
         return True
 
 # returns true if still processing
 # false if done processing
+# when done, write message to file bc mail maessage is a success
 def processData( str ):
     global message
     global recipients
     global error
     global mailed
     global rcpt
-    global printThisData
     if str == ".\n":
         i = 0
         # print(recipients)
@@ -264,7 +270,7 @@ def processData( str ):
             # print("here's what's being written...")
             # print(message)
             prename = recipients[i].split(">", 1)
-            name = "forward/" + prename[0][1:] + ".txt"
+            name = "forward/" + prename[0][1:] # + ".txt"
             i += 1
             f = open(name, "a+")
             f.write(message)
@@ -277,18 +283,23 @@ def processData( str ):
 # checks for data command
 # returns false if bad command
 # returns true if need to process data
+# don't throw error here bc use this check several places
 def data( str ):
     global error
     global dataTime
     if str[0] != "D" or str[1] != "A" or str[2] != "T" or str[3] != "A":
         return False
     i = nullspace(str[4:])
+    if i == 0 and crlf(str[4:]) != True:
+        return False
     if crlf(str[4 + i:]) != True:
+        error = 501
         return False
     return True
 
 # check rcpt whitespace to:
 # returns true if 500 or 501 level error wasn't written
+# puts recipients in message if successful command sequence
 def rcptToCmd ( str ):
     global error
     global message
@@ -317,6 +328,7 @@ def rcptToCmd ( str ):
 
 # check mail, whitespace, from:
 # returns true if 500 or 501 level error wasn't written
+# appends mail from address to message if successful command
 def mailFromCmd ( str ):
     global error
     global mailFromAddress
@@ -326,19 +338,16 @@ def mailFromCmd ( str ):
     mail = str[0:4]
     # error if not "MAIL"
     if mail[0] != "M" or mail[1] != "A" or mail[2] != "I" or mail[3] != "L":
-        # error = 500
         return False
     # check for how much white space comes after mail and store in i
     i = whitespace( str[4:] )
     # error if no whitespace
     if i == 0:
-        # error = 500
         return False
     # store characters after whitespace and mail in frome array
     frome = str[4 + i:]
     # error if not "FROM:"
     if frome[0] != "F" or frome[1] != "R" or frome[2] != "O" or frome[3] != "M" or frome[4] != ":":
-        # error = 500
         return False
     # check for amount of null space after from:
     j = nullspace( frome[5:] )
@@ -356,6 +365,7 @@ def mailFromCmd ( str ):
 
 # state machine
 # checks first letter of command and siphon of to correct helper function
+# issues 503 error if commands out of order
 def grammar ( str ):
     global mailed
     global rcpt
@@ -389,10 +399,12 @@ def grammar ( str ):
     # receive data
     elif str[0] == "D" and mailed == True and rcpt > 0:
         dataTime = data( str )
-        if data( str ) == False:
-            error = 500
-        else:
+        if dataTime == True and error == 0:
             sys.stdout.write("354 Start mail input; end with <CRLF>.<CRLF>\n")
+        if dataTime == False and error != 501:
+            error = 500
+
+            
     elif str[0] == "D" and (mailbox != True or rcpt == 0):
         if data(str) == True:
             error = 503
@@ -412,11 +424,13 @@ def grammar ( str ):
 info = sys.stdin.readlines()
 
 for address in info:
+# reset error after each line is read
     error = 0
+# echo lines to stdout
     sys.stdout.write(address)
+# assign appropriate errors
     grammar(address)
+# if not processing data check for errors and start new line
     if dataTime == False:
         handleErrors()
         sys.stdout.write('\n')
-
-# from and to are lower case
