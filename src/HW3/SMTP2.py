@@ -28,6 +28,11 @@ def toCmd(s):
         return True
     return False
 
+def quitCmd(s):
+    if s[0] == "Q" and s[1] == "U" and s[2] == "I" and s[3] == "T" and s[4] == "\n":
+        return True
+    return False
+
 
 def resetGlobals():
     global rcpt
@@ -42,8 +47,8 @@ def error(s):
     return s[0:3]
 
 
-def quit():
-    sys.stdout.write("QUIT")
+def quitter():
+    print("QUIT")
     f.close()
 
 
@@ -56,77 +61,71 @@ for line in info:
     # echo what was read to stderr
     # sys.stderr.write(line)
     response = ""
-    if fromCmd(line) == True and mailed != True:
+    if quitCmd(line):
+        quitter()
+        break
+    elif fromCmd(line) == True and mailed != True:
         resetGlobals()
         sys.stdout.write("MAIL FROM: " + line[6:])
         # read in from stdin
         response = sys.stdin.readline()
-        sys.stderr.write( response)
+        sys.stderr.write(response)
         if error(response) != "250":
-            quit()
-            break
-        else:
-            mailed = True
+            quitter()
+            break    
+        mailed = True
     elif toCmd(line) == True and mailed == True:
         sys.stdout.write("RCPT TO: " + line[4:])
         rcpt = rcpt + 1
         response = sys.stdin.readline()
-        sys.stderr.write( response)
+        sys.stderr.write(response)
         if error(response) != "250":
-            quit()
+            quitter()
             break
-        else:
-            rcpt = rcpt + 1
+        rcpt = rcpt + 1
     elif toCmd(line) != True and mailed == True and rcpt > 0:
         if dataTime == False:
             sys.stdout.write("DATA\n")
             response = sys.stdin.readline()
-            sys.stderr.write( response)
+            sys.stderr.write(response)
             if error(response) != "354":
-                quit()
+                quitter()
                 break
-            else:
-                sys.stdout.write(line)
+            sys.stdout.write(line)
             dataTime = True
         elif fromCmd(line) == True:
             sys.stdout.write(".\n")
             response = sys.stdin.readline()
-            sys.stderr.write( response)
+            sys.stderr.write(response)
             if error(response) != "250":
-                quit()
+                quitter()
                 break
             resetGlobals()
             sys.stdout.write("MAIL FROM: " + line[6:])
             # read in from stdin
             response = sys.stdin.readline()
-            sys.stderr.write( response)
+            sys.stderr.write(response)
             if error(response) != "250":
-                quit()
+                quitter()
                 break
             else:
                 mailed = True
         else:
             sys.stdout.write(line)
-    elif line[0] == "Q" and line[1] == "U" and line[2] == "I" and line[3] == "T":
-        quit()
-        break
 else:
     if dataTime == True:
-        sys.stdout.write("\n.\n")
+        sys.stdout.write(".\n")
         response = sys.stdin.readline()
-        sys.stderr.write( response)
-        if error(response) != "250":
-            quit()
+        sys.stderr.write(response)
+        quitter()
     elif mailed == True and rcpt > 0:
         sys.stdout.write("DATA\n")
         response = sys.stdin.readline()
-        sys.stderr.write( response)
+        sys.stderr.write(response)
         if error(response) != "354":
-            quit()
+            quitter()
         else:
             sys.stdout.write(".\n")
             response = sys.stdin.readline()
-            sys.stderr.write( response)
-            if error(response) != "250":
-                quit()
-            resetGlobals()
+            sys.stderr.write(response)
+            quitter()

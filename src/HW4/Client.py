@@ -3,3 +3,30 @@
 # take two command line args
     # name of the server - name of computer server is executing on
     # port number that server is expecting connection on
+        # should use 8000+0877
+        # should be prepared to handle port conflicts
+
+# listen for 220 message
+# smtp helo command
+# after 250 send mail from cmd
+
+# prints From: and then allows user to enter email address
+# print error and ask user to enter correct email
+# prints To: and then a list of recipients separated by commas - no angle brackets
+# print error and prompt user to type better address
+# Subject:
+# arbitrary text
+# Message: <message body terminated on an empty line
+# arbitrary text
+
+# establish socket
+# send message
+# terminate after success or any socket or protocol errors
+
+# send message with 
+    # From: <>
+    # To: <>
+    # Subject:
+    # blank line
+    # body
+    # do not include period
