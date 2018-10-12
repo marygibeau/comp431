@@ -1,3 +1,16 @@
+from socket import *
+serverName = 'snapper.cs.unc.edu'
+serverPort = 10877
+clientSocket = socket(AF_INET, SOCK_STREAM)
+clientSocket.connect((serverName, serverPort))
+heloMessage = "HELO " + clientSocket.gethostname()
+clientSocket.send(heloMessage.encode())
+
+# take in user input
+# change user input to be good commands
+# send user input
+
+clientSocket.close()
 # prompt user to type in email message
 # send message to server
 # take two command line args

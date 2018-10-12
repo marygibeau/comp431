@@ -574,3 +574,33 @@ RCPT TO: <ivysat@live.unc.edu>
 RCPT TO: <jeffay@cs.unc.edu>
 DATA
 Are we sure about SMTP?
+From: <mary@email.com>
+To: <jeffay@cs.unc.edu>
+To: <diane@cs.unc.edu>
+Hello professor
+I'd like to inform you
+about the impending doom
+that huricane florence poses
+stay dry
+From: <mary@email.com>
+To: <jeffay@cs.unc.edu>
+Hello professor
+I'd like to inform you
+that I have survived the hurricane
+and will be in class
+on wednesday
+From: <mary@email.com>
+To: <jeffay@cs.unc.edu>
+To: <diane@cs.unc.edu>
+Hello professor
+I'd like to inform you
+about the impending doom
+that huricane florence poses
+stay dry
+From: <mary@email.com>
+To: <jeffay@cs.unc.edu>
+Hello professor
+I'd like to inform you
+that I have survived the hurricane
+and will be in class
+on wednesday

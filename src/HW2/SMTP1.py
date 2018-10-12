@@ -271,6 +271,7 @@ def processData( str ):
             # print(message)
             prename = recipients[i].split(">", 1)
             name = "forward/" + prename[0][1:] # + ".txt"
+            print(name)
             i += 1
             f = open(name, "a+")
             f.write(message)
