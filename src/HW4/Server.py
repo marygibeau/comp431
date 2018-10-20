@@ -2,18 +2,19 @@ from socket import *
 import sys
 import os
 
-# state for command order variables
-dataTime = False
+serverPort = int(sys.argv[1]) #10877
+print(serverPort)
+serverSocket = socket(AF_INET, SOCK_STREAM)
+serverSocket.bind(('', serverPort))
+serverSocket.listen(1)
+print("The server is now ready to receive")
+
 mailed = False
 rcpt = 0
-
-# stores message, from mail address, and array of recipient addresses
-mailFromAddress = ""
+dataTime = False
 message = ""
 recipients = []
-
-# state for error messages
-error = 0
+mailFromAddress = ""
 
 # whitespace checks how many spaces 
 # returns number of first index without
@@ -243,13 +244,13 @@ def resetGlobals():
 def handleErrors():
     global error
     if error == 500:
-        connectionSocket.send("500 Syntax error: command unrecognized".encode())
+        sys.stdout.write("500 Syntax error: command unrecognized")
         return False
     elif error == 503:
-        connectionSocket.send("503 Bad sequence of commands".encode())
+        sys.stdout.write("503 Bad sequence of commands")
         return False
     elif error == 501:
-        connectionSocket.send("501 Syntax error in parameters or arguments".encode())
+        sys.stdout.write("501 Syntax error in parameters or arguments")
         return False
     else:
         connectionSocket.send("250 OK".encode())
@@ -272,6 +273,7 @@ def processData( str ):
             # print(message)
             prename = recipients[i].split(">", 1)
             name = "forward/" + prename[0][1:] # + ".txt"
+            print(name)
             i += 1
             f = open(name, "a+")
             f.write(message)
@@ -401,7 +403,7 @@ def grammar ( str ):
     elif str[0] == "D" and mailed == True and rcpt > 0:
         dataTime = data( str )
         if dataTime == True and error == 0:
-            connectionSocket.send("354 Start mail input; end with <CRLF>.<CRLF>\n".encode())
+            sys.stdout.write("354 Start mail input; end with <CRLF>.<CRLF>\n")
         if dataTime == False and error != 501:
             error = 500
 
@@ -427,22 +429,21 @@ def checkHelo(s):
 # one cmd line arg
 # port number want to listen on
 
-serverPort = 877
-serverSocket = socket(AF_INET, SOCK_STREAM)
-serverSocket.bind(('', serverPort))
-serverSocket.listen(1)
-print("The server is now ready to receive")
+
 while True:
     connectionSocket, addr = serverSocket.accept()
-    hostname = connectionSocket.gethostname()
+    hostname = gethostbyname(gethostname())
     # send initial greeting
     greeting = "220 " + hostname
+    print(greeting)
     connectionSocket.send(greeting.encode())
     # receive helo response
     helo = connectionSocket.recv(1024).decode()
+    print(helo)
     # if valid helo then send valid helo response to kick of message
     if checkHelo(helo) == True:
         heloResponse = "250 " + hostname + " pleased to meet you"
+        print(heloResponse)
         connectionSocket.send(heloResponse.encode())
     # process message here
     endOfMessage = False
@@ -451,10 +452,12 @@ while True:
         error = 0
         
         address = connectionSocket.recv(1024).decode()
+        print("addressed received")
         # find out domain names from recipients
         # no repeat of domains
         # assign appropriate errors
         grammar(address)
+        print("finished grammar")
         # if not processing data check for errors and start new line
         if dataTime == False:
             handleErrors()
