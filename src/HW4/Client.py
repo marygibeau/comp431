@@ -442,62 +442,16 @@ if errorNum(response) == "354":
         print(response + " received, quitting now")
         quitter()
 
+# put in print errors like hw1
+# take out print debugging
+# fix hostname to not display ip address
+# double check helo syntax in server
+# fix quit command
+# figure out how to print error messages when encounter socket errors and what not
+# put angle brackets on from and to in message
+# put to's on one line
 
-# file is read in from command line argument that is file name
-# f = open(sys.argv[1], "r")
 
-# info = f.readlines()
-
-# while endMessage != True:
-#     # echo what was read to stderr
-#     # sys.stderr.write(line)
-#     whatToSend()
-#     response = ""
-#     if quitCmd(line):
-#         quitter()
-#         break
-#     elif fromCmd(line) == True and mailed != True:
-#         resetGlobals()
-#         maily = "MAIL FROM: " + line[6:]
-#         clientSocket.send(maily.encode())
-#         # read in from stdin
-#         response = clientSocket.recv(1024).decode()
-#         # sys.stderr.write(response)
-#         if error(response) != "250":
-#             quitter()
-#             break
-#         mailed = True
-#     elif toCmd(line) == True and mailed == True:
-#         rman = "RCPT TO: " + line[4:]
-#         clientSocket.send(rman.encode())
-#         rcpt = rcpt + 1
-#         response = clientSocket.recv(1024).decode()
-#         # sys.stderr.write(response)
-#         if error(response) != "250":
-#             quitter()
-#             break
-#         rcpt = rcpt + 1
-#     elif toCmd(line) != True and mailed == True and rcpt > 0:
-#         if dataTime == False:
-#             clientSocket.send("DATA".encode())
-#             response = clientSocket.recv(1024).decode()
-#             # sys.stderr.write(response)
-#             if error(response) != "354":
-#                 quitter()
-#                 break
-#             clientSocket.send(line.encode())
-#             dataTime = True
-#         elif line == ".\n":
-#             endMessage = True
-#             clientSocket.send(".\n")
-#             response = clientSocket.recv(1024).decode()
-#             # sys.stderr.write(response)
-#             if error(response) != "250":
-#                 quitter()
-#                 break
-#             resetGlobals()
-#         else:
-#             clientSocket.send(line.encode())
 
 # change user input to be good commands
 # send user input
