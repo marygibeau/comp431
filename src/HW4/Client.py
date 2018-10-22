@@ -6,12 +6,9 @@ serverPort = int(sys.argv[2])  # 10877
 clientSocket = socket(AF_INET, SOCK_STREAM)
 clientSocket.connect((serverName, serverPort))
 greeting = clientSocket.recv(1024).decode()
-print(greeting)
-heloMessage = "HELO " + gethostbyname(gethostname())
-print(heloMessage)
+heloMessage = "HELO " + gethostname()
 clientSocket.send(heloMessage.encode())
 goahead = clientSocket.recv(1024).decode()
-print(goahead)
 
 rcptSuccess = False
 mailed = False
@@ -68,7 +65,6 @@ def reversePath(s):  # run backwards through the path
     if s[0] != ">":
         if error != 500 and error != 503:
             error = 501
-        print("reversepath is false")
         return False
     return True
 
@@ -81,21 +77,16 @@ def reversePath(s):  # run backwards through the path
 def path(s):
     global error
     # make sure next thing is mailbox and not null space
-    print("checking path of : " + str(s) )
     if s[0] == "<" and nullspace(s[1:]) == 0:
         box = ''.join(s).split(">", 1)
-        print(box)
         if len(box) < 2:
             if error != 500 and error != 503:
                 error = 501
-            print("path is false1")
             return False
         skip2 = nullspace(box[1])
         if crlf(box[1][skip2]) != True:
             if error != 500 and error != 503:
                 error = 501
-
-            print("path is false2")
             return False
         skip = mailbox(box[0][1:])
         if s[skip + 1] == ">":
@@ -103,8 +94,6 @@ def path(s):
     if nullspace(s[1:]) != 0 or s[0] != "<":
         if error != 500 and error != 503:
             error = 501
-
-        print("path is false3")
         return False
 
 
@@ -114,11 +103,13 @@ def mailbox(s):  # make sure string without <> being passed in
     global error
     if "@" not in s:
         if error != 500 and error != 503:
+            print("Missing an @ sign")
             error = 501
         return 0
     box = ''.join(s).split("@")
     if len(box) != 2:
         if error != 500 and error != 503:
+            print("Missing a recipient or domain name")
             error = 501
         return 0
     if localPart(box[0]) <= 0 or domain(box[1]) <= 0:
@@ -133,6 +124,7 @@ def localPart(s):
     global error
     if string(s) != True:
         if error != 500 and error != 503:
+            print("You bungled the local part")
             error = 501
         return 0
     return len(s)
@@ -145,8 +137,6 @@ def localPart(s):
 def string(s):
     for c in s:
         if char(c) != True:
-
-            print("string is false")
             return False
     return True
 
@@ -185,11 +175,13 @@ def element(s):
     global error
     if len(s) <= 0:
         if error != 500 and error != 503:
+            print("You need to put something in the first part of the address")
             error = 501
         return 0
     if letter(s[0]) != True or name(s) != True:
         if letter(s[0]) != True:
             if error != 500 and error != 503:
+                print("The address must start with a letter")
                 error = 501
         return 0
     return len(s)
@@ -203,15 +195,13 @@ def name(s):
     global error
     if letter(s[0]) != True:
         if error != 500 and error != 503:
+            print("Name doesn't start with a letter")
             error = 501
-
-        print("name1 is false")
         return False
     if letDigStr(s[1:]) != True:
         if error != 500 and error != 503:
+            print("The rest of the name is not a letter or a digit")
             error = 501
-
-        print("name2 is false")
         return False
     return True
 
@@ -229,8 +219,6 @@ def letter(s):
 def letDigStr(s):
     for char in s:
         if letDig(char) != True:
-
-            print("lds is false")
             return False
     return True
 
@@ -240,8 +228,6 @@ def letDigStr(s):
 def letDig(s):
     if digit(s) or letter(s):
         return True
-
-    print("ld is false")
     return False
 
 
@@ -258,8 +244,6 @@ def digit(s):
 def crlf(s):
     if (s[0] == '\n'):
         return True
-
-    print("crlf is false")
     return False
 
 
@@ -319,8 +303,6 @@ def rcptToCmd(s, index):
     pathe = s[j:]
     # error if path test fails
     if path(pathe) != True:
-
-        print("rcpt1 is false")
         return False
     # if no errors return sender ok
     if mailed == True:
@@ -337,8 +319,6 @@ def mailFromCmd(s):
     global message
     # error if path test fails
     if path(s) != True:
-
-        print("mail1 is false")
         return False
     # if no errors return sender ok
     if mailed == False:
@@ -350,8 +330,6 @@ def mailFromCmd(s):
 def quitCmd(s):
     if s[0] == "Q" and s[1] == "U" and s[2] == "I" and s[3] == "T" and s[4] == "\n":
         return True
-
-    print("quit is false")
     return False
 
 
@@ -361,30 +339,28 @@ def errorNum(s):
 
 def quitter():
     clientSocket.send("QUIT".encode())
-    if errorNum(clientSocket.recv(1024).decode()) == 221:
+    response = clientSocket.recv(1024).decode()
+    if errorNum(response) == "221":
         clientSocket.close()
 
 
 # get from
 while mailed != True:
     fromm = raw_input("From: \n")
-    print(fromm)
     # check from
     if mailFromCmd("<" + fromm + ">\n") == True:
         mailed = True
+
     # if from is bad loop
     # if from is good change mailed
 newFromm = "MAIL FROM: <" + fromm + ">\n"
 clientSocket.send(newFromm.encode())
-print("sent mailfromcmd, awaiting response")
 # get response
 response = clientSocket.recv(1024).decode()
-print(response)
 # if response is good change state
 while rcptSuccess != True:
     too = raw_input("To: \n")
     recipients = too.split(",")
-    print(recipients)
     # check if toos are good
     successes = 0
     rcpts = 0
@@ -396,60 +372,43 @@ while rcptSuccess != True:
         rcpts += 1
     if successes == len(recipients):
         rcptSuccess = True
-        print("good senders")
     # trim off whitespace before <'s and restore also
     # if bad one reprompt
 # if good send
 for line in recipients:
-    print(line)
     rcptBoi = "RCPT TO: <" + line + ">\n"
-    print(rcptBoi)
     clientSocket.send(rcptBoi.encode())
-    print("sent address, waiting on response")
     response = clientSocket.recv(1024).decode()
-    print("response received")
     # check if response good
 subjectt = raw_input("Subject: \n")
 subjectt = "Subject: " + subjectt + "\n"
 clientSocket.send(subjectt.encode())
-print("subject sent waiting on response...")
 response = clientSocket.recv(1024).decode()
-print(response + " received")
 # send data command
 clientSocket.send("DATA\n".encode())
-print("sent data command, waiting on response...")
 response = clientSocket.recv(1024).decode()
-print(response + " received")
 # check response starts with 354
 if errorNum(response) == "354":
-        message = "From: " + fromm + '\n'
+        message = "From: <" + fromm + ">\n"
+        message += "To: "
         for line in recipients:
-            message += "To: " + line + "\n"
+            message += "<" + line + ">, "
+        message = message[:-2] + '\n'
         message += subjectt + "\n"
         datar = ""
         datar = raw_input("Message:\n")
         while datar != ".":
-            print(datar)
             message += datar + '\n'
             datar = raw_input()
         message += ".\n"
         # message is done so send message to server
-        print("sending: \n" + message)
         clientSocket.send(message.encode())
         # get back server response
-        print("message sent, waiting on response...")
-        clientSocket.recv(1024).decode()
-        print(response + " received, quitting now")
+        response = clientSocket.recv(1024).decode()
         quitter()
 
-# put in print errors like hw1
-# take out print debugging
-# fix hostname to not display ip address
-# double check helo syntax in server
-# fix quit command
+
 # figure out how to print error messages when encounter socket errors and what not
-# put angle brackets on from and to in message
-# put to's on one line
 
 
 

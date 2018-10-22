@@ -3,7 +3,6 @@ import sys
 import os
 
 serverPort = int(sys.argv[1])  # 10877
-print(serverPort)
 serverSocket = socket(AF_INET, SOCK_STREAM)
 serverSocket.bind(('', serverPort))
 serverSocket.listen(1)
@@ -264,18 +263,19 @@ def resetGlobals():
 
 def handleErrors():
     global error
-    print("handling " + str(error))
     if error == 500:
-        sys.stdout.write("500 Syntax error: command unrecognized")
+        m = "500 Syntax error: command unrecognized"
+        connectionSocket.send(m.encode())
         return False
     elif error == 503:
-        sys.stdout.write("503 Bad sequence of commands")
+        m = "503 Bad sequence of commands"
+        connectionSocket.send(m.encode())
         return False
     elif error == 501:
-        sys.stdout.write("501 Syntax error in parameters or arguments")
+        m = "501 Syntax error in parameters or arguments"
+        connectionSocket.send(m.encode())
         return False
     else:
-        print("sending ok")
         m = "250 OK"
         connectionSocket.send(m.encode())
         return True
@@ -283,9 +283,8 @@ def handleErrors():
 # check for duplicate addresses
 # once done checking, write message to domain files
 
+
 def processData(s):
-    print("entered processData")
-    print("string is: \n" + s)
     global message
     global recipients
     global error
@@ -293,22 +292,17 @@ def processData(s):
     global rcpt
     i = 0
     domains = []
-    print(recipients)
     while i < len(recipients):
-        print("here's what's being written...")
-        print(s)
         prename = recipients[i].split(">", 1)
         domain = prename[0].split("@", 1)
         if domain[1] not in domains:
             domains.append(domain[1])
-            name = "forward/" + domain[1]  # + ".txt"
-            print(name)
+            name = "forward/" + domain[1]
             f = open(name, "a+")
             notdot = s.split(".\n")
             f.write(notdot[0])
             f.close()
         i += 1
-    print("resetting globals, data is done")
     resetGlobals()
     return False
 
@@ -318,7 +312,7 @@ def processData(s):
 # don't throw error here bc use this check several places
 
 
-def data(s ):
+def data(s):
     global error
     global dataTime
     if s[0] != "D" or s[1] != "A" or s[2] != "T" or s[3] != "A":
@@ -336,7 +330,7 @@ def data(s ):
 # puts recipients in message if successful command sequence
 
 
-def rcptToCmd (s ):
+def rcptToCmd(s):
     global error
     global message
     if s[0] != "R" or s[1] != "C" or s[2] != "P" or s[3] != "T":
@@ -368,7 +362,7 @@ def rcptToCmd (s ):
 # appends mail from address to message if successful command
 
 
-def mailFromCmd (s ):
+def mailFromCmd(s):
     global error
     global mailFromAddress
     global mailed
@@ -413,11 +407,8 @@ def grammar(s):
     global recipients
     global subject
     # only one mail from cmd
-    # print(mailed)
-    # print(rcpt)
     if dataTime == True:
         dataTime = processData(s)
-        print("dataTime is " + str(dataTime))
     elif s[0] == "M" and mailed != True:
         mailed = mailFromCmd(s)
         if mailed == False and error == 0:
@@ -444,7 +435,6 @@ def grammar(s):
     # receive data
     elif s[0] == "D" and mailed == True and rcpt > 0:
         dataTime = data(s)
-        print("dataTime = " + str(dataTime))
         if dataTime == True and error == 0:
             connectionSocket.send(
                 "354 Start mail input; end with <CRLF>.<CRLF>\n".encode())
@@ -467,6 +457,20 @@ def checkHelo(s):
         return False
     return True
 
+
+def quitCmd(s):
+    if len(s) != 4:
+        return False
+    if s[0] == "Q" and s[1] == "U" and s[2] == "I" and s[3] == "T":
+        return True
+    return False
+
+
+def quitter():
+    closingMessage = "221 " + hostname + " closing connection"
+    connectionSocket.send(closingMessage.encode())
+    # connectionSocket.close()
+
 # read from socket
 # store messages received in file like HW2
 # file name after destination domain (jeffay@unc.edu -> unc.edu)
@@ -476,7 +480,7 @@ def checkHelo(s):
 
 while True:
     connectionSocket, addr = serverSocket.accept()
-    hostname = gethostbyname(gethostname())
+    hostname = gethostname()
     # send initial greeting
     greeting = "220 " + hostname
     print(greeting)
@@ -486,7 +490,7 @@ while True:
     print(helo)
     # if valid helo then send valid helo response to kick of message
     if checkHelo(helo) == True:
-        heloResponse = "250 " + hostname + " pleased to meet you"
+        heloResponse = "250 Hello " + hostname + " pleased to meet you"
         print(heloResponse)
         connectionSocket.send(heloResponse.encode())
     # process message here
@@ -496,21 +500,17 @@ while True:
         error = 0
 
         address = connectionSocket.recv(1024).decode()
-        if address == "QUIT":
-            closingMessage = "221 " + hostname + " closing connection"
-            connectionSocket.send(closingMessage.encode())
-            connectionSocket.close()
-        print(address + "command received")
+        if quitCmd(address):
+            quitter()
+            break
+
         # find out domain names from recipients
         # no repeat of domains
         # assign appropriate errors
         grammar(address)
-        print("finished grammar")
-        print(error)
         # if not processing data check for errors and start new line
         if dataTime == False:
             handleErrors()
-            print("errors handled")
             # sys.stdout.write('\n')
         # condition to close connection
 
